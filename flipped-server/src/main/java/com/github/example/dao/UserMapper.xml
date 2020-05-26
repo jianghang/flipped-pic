@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.example.dao.UserMapper">
+    <select id="selectUserByName" resultType="com.github.example.entity.User">
+        select * from t_user_demo t where t.name = #{name}
+    </select>
+
+    <select id="selectUserListByAge" resultType="com.github.example.entity.User">
+        select * from t_user_demo t where t.age > #{age}
+    </select>
+</mapper>

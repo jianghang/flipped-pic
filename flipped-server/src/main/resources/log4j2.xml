@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+    <properties>
+        <!-- 文件输出格式 -->
+        <property name="PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} |-%-5level [%thread] %c [%L] -| %msg%n</property>
+        <!--对日志进行格式化-->
+        <property name="LOG_MSG"
+                  value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level --- [%X{requestUUID}] [%thread] [%l] : %msg%n"/>
+        <!--日志文件存储路径配置-->
+        <property name="LOG_DIR" value="/opt/logs"/>
+        <!--日志文件名称配置-->
+        <property name="LOG_NAME" value="flipped-server"/>
+        <property name="SPY_LOG_NAME" value="spy-sql"/>
+    </properties>
+
+    <appenders>
+        <Console name="CONSOLE" target="system_out">
+            <PatternLayout pattern="${LOG_MSG}"/>
+        </Console>
+        <RollingFile name="File" fileName="${LOG_DIR}/weblog/${LOG_NAME}.log" append="false"
+                     filePattern="${LOG_DIR}/weblog/$${date:yyyy-MM}/${LOG_NAME}-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout>
+                <pattern>${LOG_MSG}</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="50 MB"/>
+            </Policies>
+        </RollingFile>
+        <RollingFile name="SpyFile" fileName="${LOG_DIR}/weblog/${SPY_LOG_NAME}.log" append="false"
+                     filePattern="${LOG_DIR}/weblog/$${date:yyyy-MM}/${SPY_LOG_NAME}-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout>
+                <pattern>${LOG_MSG}</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="50 MB"/>
+            </Policies>
+        </RollingFile>
+    </appenders>
+
+    <loggers>
+        <logger name="com.github" level="info"/>
+        <logger name="com.p6spy.engine" level="info" additivity="false">
+            <appender-ref ref="SpyFile"/>
+        </logger>
+        <root level="info">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="File"/>
+        </root>
+    </loggers>
+</configuration>

@@ -1,0 +1,30 @@
+spring:
+  profiles:
+    active: @profileActive@
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.67.132:3306/flipped_pic?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Hongkong
+    username: admin
+    password: ENC(s86x6miH2NvKxWepuuoGjvx/XLu9gRj6)
+  servlet:
+    multipart:
+      max-file-size: 50MB
+
+logging:
+  config: classpath:log4j2.xml
+jasypt:
+  encryptor:
+    password: nmyswls
+
+server:
+  port: 8080
+  servlet:
+    context-path: /flipped
+mybatis-plus:
+  mapper-locations: classpath*:com/github/**/*.xml
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
