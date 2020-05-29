@@ -2,12 +2,17 @@ package com.github.controller;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.enums.CellExtraTypeEnum;
+import com.github.config.FilePathProperties;
 import com.github.listener.MapDataListener;
 import com.github.listener.PicUrlDataListener;
 import com.github.model.PicUrlData;
+
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
+
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +22,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -25,20 +32,28 @@ import java.util.UUID;
 @Slf4j
 public class UploadController {
 
+    @Autowired
+    private FilePathProperties filePathProperties;
+
     @PostMapping("/upload")
     public String upload(@RequestParam("file") MultipartFile[] multipartFiles) throws IOException {
         log.info("file length: {}", multipartFiles.length);
+        String todayStr = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         for (MultipartFile multipartFile : multipartFiles) {
-            Path path = Paths.get("F:/static", "/202005/", UUID.randomUUID().toString() + multipartFile.getOriginalFilename());
+            Path path = Paths.get(filePathProperties.getExcel(), todayStr, multipartFile.getOriginalFilename());
             if (!path.toFile().getParentFile().exists()) {
                 path.toFile().getParentFile().mkdir();
+            } else {
+                if (path.toFile().exists()) {
+
+                }
             }
             multipartFile.transferTo(path);
             List<String> fileTypeList = Splitter.on(".").splitToList(multipartFile.getOriginalFilename());
             String fileType = fileTypeList.get(fileTypeList.size() - 1);
             log.info("fileType: {}", fileType);
             EasyExcel.read(path.toFile(), new MapDataListener())
-                    .sheet("Template").doRead();
+                .sheet("Template").doRead();
 
 //            List<PicUrlData> picUrlDataList = dataList();
 //            Path excelPath = Paths.get("F:/static", "/202005/", UUID.randomUUID().toString() + ".xlsx");

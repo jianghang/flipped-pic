@@ -23,6 +23,10 @@ server:
 mybatis-plus:
   mapper-locations: classpath*:com/github/**/*.xml
 
+file-path:
+  excel: F:/excel
+  image: F:/images
+
 management:
   endpoints:
     web:
